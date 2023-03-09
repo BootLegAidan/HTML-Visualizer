@@ -1,0 +1,5 @@
+Thanks to devaman for their music visualizer. That was a huge inspiration. I contributed a lot to it, and it inspired me to make my own. (check out their project https://github.com/devaman/audio-analyzer)
+Thanks to abhinavtembulkar for his original repo. This repo is just a version of theirs with heavy editing. It's pretty much unrecognizable at this point (Check out their project https://github.com/abhinavtembulkar/Freqbars)
+Big thanks to Zylenxx for letting me use their music (once again). They've made me sound effects for another project of mine, they're awesome. (Check out their YouTube channel https://www.youtube.com/@Zylenxx)
+
+I have no idea what I'm doing when it comes to Python and Batch. Originally this was just gonna be something I used every now and then, but I decided to fix it up a bit (make it friendlier to use) and release it. Message me if you have any issues or need help. My discord is BootLegAidan#9828

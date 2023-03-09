@@ -1,0 +1,19 @@
+Running:
+1. Run "addSongs.py". This is a one time thing if you do not want to add any more songs. If you do, look at where it says "Adding Songs" below
+2. You must have Chrome installed
+3. run "Open in Chrome.bat"
+4. Scroll down and pick a song from the list
+
+Options:
+Quality: Controls how big the audio's sample is
+Style: Controls the visual style
+Fullscreen: Makes the visualizer fullscreen
+Volume: Controls the volume of the audio. This can get pretty loud
+Use Mic: **THIS DOES NOT WORK**
+
+Adding Songs:
+1. Drag MP3 files into the place where there is a file called "PUT SONGS HERE". In other words, drag MP3 files into the same directory that this note is
+*IMPORTANT* The MP3 files must have metadata (specifically, it needs to at least have the title and the author in the metadata). I use Mp3tag to edit my MP3's, and it works fine
+2. Run "addSongs.py"
+This takes all the MP3 files and puts them in to a JSON file so that they can be added into the visualizer. The only thing it scans for is any file ending in .mp3, it then logs the metadata from that file and puts it into songs.json (located at /Visualizer/song.json). This does not change any files other than songs.json
+3. Open "Run in Chrome.bat" and scroll down. Your music should be in the list.

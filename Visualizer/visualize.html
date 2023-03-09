@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="visualize.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script src="betterCtx.js" charset="utf-8"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/lib/alea.min.js">
+</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js"
+        integrity="sha512-NxocnqsXP3zm0Xb42zqVMvjQIktKEpTIbCXXyhBPxqGZHqhcOXHs4pXI/GoZ8lE+2NJONRifuBpi9DxC58L0Lw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+    <title>Visualizer</title>
+</head>
+
+<body>
+    <div class="hidden">
+      <button id="play" onclick="togglePlay()"><b>LOADING.......</b></button>
+      <button type="button" name="button" onclick="setMic()">Get Mic</button>
+      <label for="songs">Choose song:</label>
+      <select name="songs" id="songs"></select>
+      <label for="get-files">Upload song:</label>
+      <input type="file" name="client-file" id="get-files" />
+      <button style="color:azure; background-color: black;">Sensitivity: </button>
+      <input type="range" min="1" max="255" value="180" class="slider" id="ranges" oninput="slides()" />
+      <button id="reset" onclick="resets()"><b>180</b></button>
+    </div>
+    <div id="snackbar">Loading...</div>
+
+    <div class="cContainer">
+      <canvas id="canvas" width="300" height="300"></canvas>
+    </div>
+    <code id="frameRate"></code>
+    <code id="songPlaying"></code>
+    <div id="songList">
+
+    </div>
+    <div class="options">
+      <span>
+        <label for="bins">Quality</label>
+        <input id="bins" type="number" name="bins" value="10" min="4" max="10" onchange="
+        bins=parseInt(2**this.value);
+        fft.bins=bins;
+        spectrum = []
+        ">
+      </span>
+      <span>
+        <label for="style">Style</label>
+        <input id="style" type="number" name="Style" value="0" min="0" max="100" onchange="
+        dispStyle=parseInt(this.value);
+        console.log(style);
+        ">
+      </span>
+      <button type="button" name="button" onclick="document.body.requestFullscreen()">Fullscreen</button>
+      <span>
+        <label for="volume">Volume</label>
+        <input id="volume" type="number" name="Style" value="15" min="0" max="100" onchange="
+        song.setVolume(parseInt(this.value)/100);
+        ">
+      </span>
+      <button type="button" name="mic" onclick="setMic()">Use Mic</button>
+    </div>
+    <script src="miscSetup.js" charset="utf-8"></script>
+    <script src="visualize.js"></script>
+    <script src="songInfo.js" charset="utf-8"></script>
+    <!-- <script src="script.js" charset="utf-8"></script> -->
+</body>
+
+</html>
