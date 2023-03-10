@@ -39,12 +39,12 @@
 
     <div class="cContainer">
       <canvas id="canvas" width="300" height="300"></canvas>
+      <div class="progressBar" id="songTimeBar">
+        <div class="progress" id="songTime">:)</div>
+      </div>
     </div>
     <code id="frameRate"></code>
     <code id="songPlaying"></code>
-    <div id="songList">
-
-    </div>
     <div class="options">
       <span>
         <label for="bins">Quality</label>
@@ -64,11 +64,14 @@
       <button type="button" name="button" onclick="document.body.requestFullscreen()">Fullscreen</button>
       <span>
         <label for="volume">Volume</label>
-        <input id="volume" type="number" name="Style" value="15" min="0" max="100" onchange="
+        <input id="volume" type="number" name="Style" value="50" min="0" max="100" onchange="
         song.setVolume(parseInt(this.value)/100);
         ">
       </span>
       <button type="button" name="mic" onclick="setMic()">Use Mic</button>
+    </div>
+    <div id="songList">
+
     </div>
     <script src="miscSetup.js" charset="utf-8"></script>
     <script src="visualize.js"></script>

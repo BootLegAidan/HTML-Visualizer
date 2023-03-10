@@ -41,3 +41,29 @@ function flip (dim='both') {
   }
   center(dim,-1)
 }
+
+
+
+function invX(x) {
+  return canvas.width - x
+}
+function invY(y) {
+  return canvas.height - y
+}
+
+function cenX(x) {
+  return (canvas.width*0.5) + x
+}
+function cenY(y) {
+  return (canvas.height*0.5) + y
+}
+
+// class BetterCtx {
+//   constructor() {
+//
+//   }
+//   moveTo (x, y) {
+//     ctx.moveTo(Math.floor(x),Math.floor(y))
+//   }
+//
+// }

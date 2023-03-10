@@ -1,3 +1,59 @@
+let globalTemps = {
+  36: {},
+  46: [],
+  47: [],
+  53: {
+    max: undefined,
+    num: 0
+  },
+  54: [],
+  55: {
+    vels: [],
+    pos: []
+  },
+  56: {
+    vel: [],
+    pos: [],
+    goal: [],
+    goalCompleted: []
+  },
+  57: {
+    vel: [],
+    pos: []
+  }
+}
+const styleCfg = {
+  46: {
+    iterations: 25
+  },
+  47: {
+    iterations: 15,
+    saveFrequency: 4
+  },
+  56: {
+    goalCompleteDist: 25
+  },
+  57: {
+    enablePush: true,
+    pushDist: 75
+  }
+}
+let mouse = {
+  x: 0,
+  y: 0,
+  down: false
+}
+document.addEventListener('mousemove',(e)=>{
+  mouse.x = e.clientX,
+  mouse.y = e.clientY
+})
+document.addEventListener('mousedown',(e)=>{
+  mouse.down = true
+})
+document.addEventListener('mouseup',(e)=>{
+  mouse.down = false
+})
+
 function fakeRandom(x=0,y=0,i,samples=5) {
   let segments = [
     (x,y) => Math.sin(x-y),
@@ -38,4 +94,13 @@ function minMax(arr,storeResults=false) {
     if (isNaN(this.max) || i > this.max) {this.max = i}
   }
   return `Min: ${min} \n Max: ${max}`
+}
+
+function DownloadCanvasAsImage(){
+    let downloadLink = document.createElement('a');
+    downloadLink.setAttribute('download', 'CanvasAsImage.png');
+    let dataURL = canvas.toDataURL('image/png');
+    let url = dataURL.replace(/^data:image\/png/,'data:application/octet-stream');
+    downloadLink.setAttribute('href', url);
+    downloadLink.click();
 }

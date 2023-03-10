@@ -1,13 +1,14 @@
 let sensitivity = 0.1 ; // Percent (0 - 100)
 let dispStyle = 0;
+let currentSong = ''
 let musicDir = 'C:/Users/Aidan/Music/'
 let threshold = 0
-if (Math.random() < 0.05) {
-  alert('Find a new song')
-}
+// if (Math.random() < 0.05) {
+//   alert('Find a new song')
+// }
 
 let offscreenC,ctx,canvas,started
-let smth = 0.75
+let smth = 0.5
 let bins = 1024
 fft = new p5.FFT(smth,bins)
 let tick = 0
@@ -52,6 +53,7 @@ function start() {
         }
       }
       song = loadSound(songInfo[songDir.path].path, success, failed, loading)
+      currentSong = item
       fft.setInput(song)
       song.onended(()=>{
         console.log('done');
@@ -65,18 +67,14 @@ function start() {
   alerter_show()
 
   newSong()
-  // song = loadSound(`${musicDir}${Song}.mp3`, success, failed, loading)
-  // song._onended = newSong
-  // mic = new p5.AudioIn()
-  // mic.start()
-
   fft.setInput(song)
-  // canvas.style.position='absolute'
-  // canvas.style.top = '0px'
   onResize()
   started = true
+  setInterval(()=>{
+    document.getElementById('songTime').style.width = `${Math.floor(1000*(song.currentTime() / currentSong.length))/10}%`
+  },1000)
+
 }
-// canvas.style.height = canvas.height+'px';
 function onResize() {
   let [w,h] = [window.innerWidth,window.innerHeight]
   // console.log(w,h);
@@ -91,17 +89,9 @@ const songButton = document.getElementById('play')
 const inp = document.getElementById("get-files");
 const snacker = document.getElementById("snackbar");
 
-
-// let strength = 150
-// let fval = 180
-// let maxx = 0
-// let maxval=255
-
 let mic
 let song
 let Song
-// let maxxspec
-// let fft
 let lastSpect = []
 let sliders = []
 let state="song"
@@ -116,9 +106,8 @@ function setMic() {
 }
 function newSong() {
   Song = songList[Math.floor(Math.random()*songList.length)].title
-  // song.onended(()=>{})
-  // console.log(songInfo[Song]);
   song = loadSound(songInfo[Song].path, success, failed, loading)
+  currentSong = songInfo[Song]
   song.onended(()=>{
     console.log('done');
     newSong()
@@ -128,23 +117,13 @@ function newSong() {
 
 }
 function setup(Song = songList[Math.floor(Math.random()*songList.length)]){
-    // createCanvas(window.innerWidth,window.innerHeight)
-    // background(0)
-
 }
 
 const success = () => {
     if (song.isPlaying) {
       song.stop()
     }
-
-    document.getElementById('songPlaying').innerHTML = song.url.replace('.mp3','').replace(musicDir,'')
-    // console.log('SUCCESS');
-    // snacker.innerHTML = "Tap here to play";
-    // snacker.onclick = () => {
-    //     songButton.innerHTML = "Pause(mic)";
-    //     alerter_hide();
-    // }
+    document.getElementById('songPlaying').innerHTML = `${currentSong.title}<br>${currentSong.artist}`
     song.play();
     song.setVolume(document.getElementById('volume').value/100)
 }
@@ -154,11 +133,9 @@ const failed = () => {
     song.stop()
     snacker.innerHTML = "Failed to load song, reload page";
     console.log('FAILED');
-    // setInterval(newSong,500)
 }
 
 const loading = (progress) => {
-    // snacker.innerHTML = `Loading... ${(progress * 100).toFixed(0)} %`;
 }
 
 function typed() {
@@ -192,17 +169,13 @@ function togglePlay() {
     }
 }
 
-let globalTemps = {
-  36: {}
-}
+
 
 function draw() {
   if (!started) {
     return
   }
   tick++
-  // ctx.fillStyle = 'black'
-  // ctx.fillRect(0,0,canvas.width,canvas.height)
   // fft.input.fftSize = bins*4
   fft.input.fftSize = bins * 2
   spectrum = fft.analyze()
@@ -271,9 +244,6 @@ function draw() {
 
   for(let i=0;i<bins;i++) {
     let height = spectrum[i]
-    // if (i == 0) {
-    //   ctx.fillText(height,50,50)
-    // }
     let mean = ((height+lastSpect[i])/2)
     sum += height
 
@@ -287,11 +257,8 @@ function draw() {
       case 0:
         ctx.fillRect(Math.floor(i*width),canvas.height,Math.ceil(width),-height*maxH)
       break; case 1:
-        // center('y')
         ctx.fillRect(Math.floor(i*width),(canvas.height/2)-(height*maxH*0.5),Math.ceil(width),height*maxH)
-        // ctx.fillRect(Math.floor(i*width),maxH*255*0.5,Math.ceil(width),height*maxH)
       break; case 2:
-        // ctx.scale(1,-1)
         if (i == 0) {
           ctx.beginPath()
           ctx.moveTo(0,canvas.height)
@@ -397,7 +364,6 @@ function draw() {
         }
         ctx.fillStyle = 'rgba(15,15,15,1)'
         ctx.fillRect(Math.floor(i*width),-height*maxH*0.5,Math.ceil(width),height*maxH)
-        // ctx.fillRect(Math.floor(i*width),0,Math.ceil(width),height*maxH*0.5)
 
         ctx.fillStyle = 'red'
         ctx.fillRect(Math.floor(i*width),sliders[i]*maxH*0.5,Math.ceil(width),Math.ceil(width))
@@ -412,13 +378,7 @@ function draw() {
       break; case 11:
         h = canvas.height / 250
         w = canvas.width / bins
-        // x = (tick % (canvas.width/w))*w;
         x = w * i
-        // if (x == 0) {
-        //   ctx.clearRect(0,0,canvas.width,canvas.height)
-        // }
-        // ctx.fillStyle = 'rgba(0,0,0,0.01)'
-        // ctx.clearRect(x+(w*5),0,w*10,canvas.height)
 
         ctx.fillStyle = `rgb(${mean},${lastSpect[i]},${height})`
         ctx.fillRect(Math.floor(x),Math.floor(0),Math.ceil(w),Math.ceil(h))
@@ -435,7 +395,6 @@ function draw() {
           ctx.resetTransform()
         }
         ctx.restore()
-        // ctx.fillRect(canvas.width - (i*width/2),0,-width/2,spectrum[i]*maxH)
       break; case 13:
         ctx.lineWidth = 10;
         if (i == 0) {
@@ -443,7 +402,6 @@ function draw() {
           ctx.moveTo(0,height*maxH)
           temp = height
         } else if (height < temp
-          // && height > spectrum[i-1]
         ) {
           ctx.lineTo(i*width,height*maxH)
           temp = height
@@ -460,16 +418,8 @@ function draw() {
           ctx.beginPath()
           ctx.moveTo(0,canvas.height-(height*maxH))
           temp = height
-        } else if (height < temp
-          // && height > spectrum[i-1]
-        ) {
+        } else if (height < temp) {
           ctx.lineTo(i*width,canvas.height-(height*maxH))
-          // ctx.quadraticCurveTo(
-          //   i*width,
-          //   canvas.height-(height*maxH),
-          //   (i+0.5)*width,
-          //   canvas.height-(((height+spectrum[i+1])/2)*maxH)
-          // )
           temp = height
         }
         if (i >= bins - 2) {
@@ -486,8 +436,6 @@ function draw() {
         if (i >= bins - 2) {
           ctx.stroke()
         }
-        // fillCircle(i*width,Math.sin((((Math.PI*3)/bins)*i)+(height/128))*canvas.height/3,width/2)
-        // fillRect(i*width,0,width,(canvas.height/3)*Math.sin(i/(bins*0.05)))
       break; case 16:
         width = canvas.height/bins
         maxH = (canvas.width/4)/255
@@ -512,7 +460,6 @@ function draw() {
         }
       break; case 18:
         ctx.fillStyle='rgba(255,255,255,0.025)'
-        // ctx.fillRect(i*width,0,width,height)
         ctx.beginPath()
         ctx.moveTo((i-7)*width,0)
         ctx.lineTo((i-4)*width,height*maxH*0.5)
@@ -525,7 +472,6 @@ function draw() {
       break; case 19:
         ctx.fillStyle=`hsla(${(360/bins)*i},70%,70%,2.5%)`
         center('y')
-        // ctx.fillRect(i*width,0,width,height)
         ctx.beginPath()
         ctx.moveTo((i-7)*width,0)
         ctx.lineTo((i-4)*width,height*(maxH/2)*0.5)
@@ -697,11 +643,6 @@ function draw() {
       break; case 30:
         maxH = (Math.min(canvas.width,canvas.height)*0.9)/(bins*2)
         center()
-        // ctx.beginPath()
-        // ctx.arc(0,0,maxH*(bins-i),0,((Math.PI/255)*height))
-        // ctx.stroke()
-        // flip('x')
-        // center('x')
         ctx.beginPath()
         ctx.arc(0,0,maxH*(bins-i),(Math.PI/2)-(Math.PI/255)*height,(Math.PI/2)+(Math.PI/255)*height)
         ctx.stroke()
@@ -722,9 +663,7 @@ function draw() {
         y = Math.floor(i/steps)
         fillCircle((x+0.5)*widthStep,(y+0.5)*heightStep,Math.min(widthStep,heightStep)*(height/255))
       break; case 33:
-        // ctx.fillStyle = `rgb(${255-((255/bins)*i)},${255-((255/bins)*i)},${255-((255/bins)*i)})`
         fillStyle(`gray(${height/255})`)
-        // maxH = (Math.min(canvas.width,canvas.height)*0.9)/(bins*2)
         center()
         fillCircle(0,0,(Math.min(canvas.height,canvas.width)/bins/2)*(bins-i))
       break; case 34:
@@ -740,12 +679,7 @@ function draw() {
         ctx.font = `${width*2}px serif`;
         ctx.font = `${width*2}px VT323`;
         for (let j = 0; height >= 0; height -= width/2) {
-          // ctx.fillText('#',i*width,(height)*maxH,width)
-          // ctx.fillText(chars[Math.floor((height/255)*chars.length)],i*width,canvas.height-((height)*maxH),width)
           ctx.fillText(chars[Math.floor(new alea(i+''+height)()*chars.length)],i*width,canvas.height-((height)*maxH),width)
-          // ctx.fillText(chars[Math.floor(new alea((i+Math.floor(now/100))+''+height)()*chars.length)],i*width,canvas.height-((height)*maxH),width)
-
-
         }
       break; case 36:
         chars = ' ..:::++++######'
@@ -755,9 +689,6 @@ function draw() {
         ctx.font = `${width*2}px serif`;
         ctx.font = `${width*2}px VT323`;
         for (let j = 0; height >= 0; height -= width/2) {
-          // ctx.fillText('#',i*width,(height)*maxH,width)
-          // ctx.fillText(chars[Math.floor((height/255)*chars.length)],i*width,canvas.height-((height)*maxH),width)
-          // ctx.fillText(chars[Math.floor(new alea(i+''+height)()*chars.length)],i*width,canvas.height-((height)*maxH),width)
           ctx.fillText(
             chars[
               Math.floor(
@@ -855,7 +786,6 @@ function draw() {
         ctx.fillStyle = 'white'
         fillRect(i*width,(canvas.height*0.25)+(spectrum[i]*canvas.height*0.25),width,(canvas.height/2)-(spectrum[i]*canvas.height*0.5))
       break; case 45:
-        // center('y')
         ctx.fillStyle = 'white'
         if (i == 0) {
           ctx.stroke()
@@ -864,11 +794,220 @@ function draw() {
         }
         height = (height + lastSpect[i])/2
         nextHeight = (spectrum[i-1]+lastSpect[i-1])/2
-        // lineTo(i*width,(height*canvas.height*0.5)+(canvas.height/2))
         ctx.quadraticCurveTo(
           (i-0.5) * width,    ((height+nextHeight)*0.5*canvas.height*0.5) + (canvas.height/2),
           i * width,    (height*canvas.height*0.5) + (canvas.height/2)
         )
+      break; case 46:
+        center('y')
+        for (let j = styleCfg[46].iterations; j > 1; j--) {
+          if (i == 0) {
+            globalTemps[46][j] = (height/255)
+          } else {
+            globalTemps[46][j] = ((height/255) + (globalTemps[46][j])*j)/(1+j)
+          }
+          ctx.fillStyle = `hsl(${(360/(styleCfg[46].iterations-1))*j},70%,70%)`
+          fillRect(i*width,-(globalTemps[46][j]*canvas.height*0.3),width,(globalTemps[46][j]*canvas.height*0.3*2))
+        }
+      break; case 47:
+        freq = styleCfg[47].saveFrequency
+        iterations = styleCfg[47].iterations
+        if (i == 0) {
+          if ((tick % freq) == 0) {
+            globalTemps[47].unshift(spectrum)
+          }
+          if (globalTemps[47].length > iterations) {
+            globalTemps[47].pop()
+          }
+        }
+        globalTemps[47].forEach((spect, index) => {
+          ctx.beginPath()
+          ctx.moveTo((i)*width,invY((spect[i]/255)*(canvas.height/iterations))-((canvas.height/iterations)*index*0.8))
+          ctx.lineTo((i+1)*width,invY(((spect[i+1]||0)/255)*(canvas.height/iterations))-((canvas.height/iterations)*index*0.8))
+          ctx.stroke()
+        });
+      break; case 48:
+        freq = styleCfg[47].saveFrequency
+        iterations = styleCfg[47].iterations
+        if (i == 0) {
+          if ((tick % freq) == 0) {
+            globalTemps[47].push(spectrum)
+          }
+          if (globalTemps[47].length > iterations) {
+            globalTemps[47].shift()
+          }
+        }
+        globalTemps[47].forEach((spect, index) => {
+          ctx.fillStyle = `hsl(0,0%,${(100/iterations)*index}%)`
+          fillRect(
+            i*width,
+            invY((spect[i]/255)*(canvas.height/iterations)*5)-((canvas.height/iterations)*(iterations-index)*0.5),
+            width,
+            (spect[i]/255)*(canvas.height/iterations)*5
+          )
+        });
+      break; case 49:
+        freq = styleCfg[47].saveFrequency
+        iterations = styleCfg[47].iterations
+        if (i == 0) {
+          if ((tick % freq) == 0) {
+            globalTemps[47].push(spectrum)
+          }
+          if (globalTemps[47].length > iterations) {
+            globalTemps[47].shift()
+          }
+        }
+        globalTemps[47].forEach((spect, index) => {
+          ctx.beginPath()
+          ctx.moveTo(i*width,invY((spect[i]/255)*(canvas.height/iterations))-((canvas.height/iterations)*(iterations-index)*0.8))
+          ctx.lineTo((i+1)*width,invY((spect[i]/255)*(canvas.height/iterations))-((canvas.height/iterations)*(iterations-index)*0.8))
+          ctx.lineTo((i+1)*width,invY((spect[i+1]/255)*(canvas.height/iterations))-((canvas.height/iterations)*(iterations-index)*0.8))
+          ctx.stroke()
+        });
+      break; case 50:
+        freq = styleCfg[47].saveFrequency
+        iterations = styleCfg[47].iterations
+        if (i == 0) {
+          if ((tick % freq) == 0) {
+            globalTemps[47].push(spectrum)
+          }
+          if (globalTemps[47].length > iterations) {
+            globalTemps[47].shift()
+          }
+        }
+        globalTemps[47].forEach((spect, index) => {
+          ctx.fillStyle = `rgb(${spect[i-1]||spect[i]},${spect[i]},${spect[i+1]||spect[i]})`
+          height = (spect[i]/(255*0.5))
+          fillRect(
+            (i*width)+(width*0.25*(1-height)),
+            invY((canvas.height/iterations)*index)+((canvas.height/iterations)*0.25*(1-height)),
+            (width*height*0.5),
+            ((canvas.height/iterations)*height*0.5)
+          )
+        });
+      break; case 51:
+        fillStyle(`rgb(${(spectrum[i-1]+height)/2},${height},${(spectrum[i+1]+height)/2})`)
+        ctx.fillRect(i*width,invY(0),width,-height*maxH)
+      break; case 52:
+        last = spectrum[i-1]
+        next = spectrum[i+1]
+        last = (!isNaN(last) ? last : height)
+        next = (!isNaN(next) ? next : height)
+        fillStyle(`hsl(${(last+next)/2},${(height/255)*100}%,70%)`)
+        ctx.fillRect(i*width,invY(0),width,-height*maxH)
+      break; case 53:
+        height = height / 255
+        center('y')
+        num = globalTemps[53].num
+        if (i == 0) {
+          globalTemps[53].num = (0)
+        }
+
+        globalTemps[53].num = Math.sin(num) + (height)
+        // globalTemps[53].num = Math.sqrt(num+height+1)-1
+        if ((
+          Math.abs(num) > globalTemps[53].max || isNaN(globalTemps[53].max)
+        ) && !(num == Infinity || num == 0)) {
+          globalTemps[53].max = Math.abs(num)
+        }
+        fillRect(i*width,-((
+          num/globalTemps[53].max
+        )*canvas.height*0.3),width,((
+          num/globalTemps[53].max
+        )*canvas.height*0.6))
+      break; case 54:
+        globalTemps[54][i] = ((height/255) + (globalTemps[54][i]||0)) % 360
+        ang = (globalTemps[54][i]/360)*Math.PI*2
+        radi = (Math.min(canvas.width,canvas.height)/2)/bins
+        fillCircle(cenX(
+          Math.sin(ang)*radi*i
+        ),cenY(
+          Math.cos(ang)*radi*i
+        ),((height/255)*radi*2))
+      break; case 55:
+        globalTemps[55].vels[i] = ((height/255) + (globalTemps[55].vels[i] || 0)) * 0.75
+        globalTemps[55].pos[i] = (globalTemps[55].vels[i] + (globalTemps[55].pos[i]||0)) % 360
+        ang = (globalTemps[55].pos[i]/360)*Math.PI*2
+        radi = (Math.min(canvas.width,canvas.height)/2)/bins
+        fillCircle(cenX(
+          Math.sin(ang)*radi*i
+        ),cenY(
+          Math.cos(ang)*radi*i
+        ),((height/255)*radi))
+      break; case 56:
+        if (globalTemps[56].vel.length < bins) {
+          globalTemps[56].vel[i] = {x: 0, y: 0}
+        }
+        if (globalTemps[56].pos.length < bins) {
+          globalTemps[56].pos[i] = {x: 0, y: 0}
+        }
+        if (globalTemps[56].goal.length < bins || globalTemps[56].goalCompleted[i]) {
+          globalTemps[56].goal[i] = {
+            x: (new alea('x'+i+tick)()*2)-1,
+            y: (new alea('y'+i+tick)()*2)-1
+          }
+          globalTemps[56].goalCompleted[i] = false
+        }
+        speedMult = (height/255)*0.4
+        pos = globalTemps[56].pos[i]
+        goal = globalTemps[56].goal[i]
+        goal = {
+          x: goal.x*canvas.width*0.5,
+          y: goal.y*canvas.height*0.5
+        }
+        ang = Math.atan2(goal.x-pos.x,goal.y-pos.y)
+        vel = globalTemps[56].vel[i]
+        globalTemps[56].vel[i] = {
+          x: (vel.x + (Math.sin(ang)*speedMult))*0.9,
+          y: (vel.y + (Math.cos(ang)*speedMult))*0.9
+        }
+        pos.x += vel.x
+        pos.y += vel.y
+
+        xDif = pos.x - goal.x
+        yDif = pos.y - goal.y
+        if (Math.sqrt( xDif*xDif + yDif*yDif ) < styleCfg[56].goalCompleteDist) {
+          globalTemps[56].goalCompleted[i] = true
+        }
+        fillCircle(cenX(
+          pos.x
+        ),cenY(
+          pos.y
+        ),((height/255)*10)+1)
+      break; case 57:
+        if (globalTemps[56].vel.length < bins) {
+          globalTemps[56].vel[i] = {x: 0, y: 0}
+        } else if (globalTemps[56].pos.length < bins) {
+          globalTemps[56].pos[i] = {x: 0, y: 0}
+        } else {
+
+          speedMult = (height/255)*2.5
+          pos = globalTemps[56].pos[i]
+          goal = {
+            x: mouse.x - (canvas.width/2),
+            y: (mouse.y + scrollY) - (canvas.height/2)
+          }
+          xDif = pos.x - goal.x
+          yDif = pos.y - goal.y
+          if (mouse.down || (styleCfg[57].enablePush && Math.sqrt( xDif*xDif + yDif*yDif ) < styleCfg[57].pushDist)) {
+            ang = Math.atan2(pos.x-goal.x,pos.y-goal.y)
+          } else {
+            ang = Math.atan2(goal.x-pos.x,goal.y-pos.y)
+          }
+          vel = (globalTemps[56].vel[i] || {x:0,y:0})
+          globalTemps[56].vel[i] = {
+            x: (vel.x + (Math.sin(ang)*speedMult))*0.90,
+            y: (vel.y + (Math.cos(ang)*speedMult))*0.90
+          }
+          pos.x += vel.x
+          pos.y += vel.y
+
+          fillCircle(cenX(
+            pos.x
+          ),cenY(
+            pos.y
+          ),((height/255)*10)+1)
+        }
       break; default:
         dispStyle--
         document.getElementById('style').value = dispStyle
@@ -896,28 +1035,8 @@ function draw() {
   // ` + frames.high[0] + ' - ' + frames.low[0]
 }
 
-//HTML
-//<-------------------------------->
-// inp.onchange = (event) => {
-//     console.log(event)
-//     song.stop()
-//     alerter_show()
-//     song = loadSound(event.target.files[0], typed, failed, loading)
-//     const dropdown = document.createElement("option")
-//     const songname = event.target.files[0].name
-//     dropdown.text = songname.substr(0, 8)
-//     songs.add(dropdown)
-// }
-
-// songs.oninput = (event) => {
-//     alerter_show()
-//     console.log(event.target.value)
-//     song.stop()
-//     song = loadSound(`${musicDir}${event.target.value}.mp3`, typed, failed, loading)
-// }
 
 function alerter_show() {
-    // snacker.className = "show"
 }
 
 function alerter_hide() {

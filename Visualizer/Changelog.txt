@@ -1,0 +1,8 @@
+v1.1
+Fixed the text that shows what song is currently playing
+Removed some unused code
+Added Style Configuration
+Added 12 new styles
+
+v1.0
+Initial Release
