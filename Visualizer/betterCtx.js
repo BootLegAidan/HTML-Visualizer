@@ -14,6 +14,9 @@ function fillStyle(color) {
 function fillRect(x,y,w,h) {
   ctx.fillRect(Math.floor(x),Math.floor(y),Math.ceil(w),Math.ceil(h))
 }
+function clearRect(x,y,w,h) {
+  ctx.clearRect(Math.floor(x),Math.floor(y),Math.ceil(w),Math.ceil(h))
+}
 function fillCircle(x, y, r) {
   ctx.beginPath()
   ctx.arc(x,y,r,0,Math.PI*2)
@@ -57,7 +60,9 @@ function cenX(x) {
 function cenY(y) {
   return (canvas.height*0.5) + y
 }
-
+// function debug(x) {
+//   if ()
+// }
 // class BetterCtx {
 //   constructor() {
 //

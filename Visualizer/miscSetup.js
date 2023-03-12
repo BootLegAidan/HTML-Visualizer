@@ -1,4 +1,8 @@
 let globalTemps = {
+  13: {
+    val: 0,
+    index: 0
+  },
   36: {},
   46: [],
   47: [],
@@ -23,6 +27,15 @@ let globalTemps = {
   }
 }
 const styleCfg = {
+  11: {
+    scrollSpeed: 10
+  },
+  24: {
+    layers: 10
+  },
+  36: {
+    scrollSpeed: 25
+  },
   46: {
     iterations: 25
   },

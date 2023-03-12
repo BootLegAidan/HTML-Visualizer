@@ -1,3 +1,8 @@
+v1.2
+Moved all the styles to a separate file
+Changed style system to use an arrow of functions instead of a bunch of switch cases
+Changed style 6
+
 v1.1
 Fixed the text that shows what song is currently playing
 Removed some unused code
