@@ -1,7 +1,7 @@
 let songList = []
 let songInfo = {}
 
-fetch('songs.json')
+fetch('Visualizer/songs.json')
 .then((response) => response.json())
 .then((json) => {
   songInfo = json
