@@ -13,13 +13,11 @@
     <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
     <script src="betterCtx.js" charset="utf-8"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/lib/alea.min.js">
+    <script src="libs/alea.min.js">
 </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js"
-        integrity="sha512-NxocnqsXP3zm0Xb42zqVMvjQIktKEpTIbCXXyhBPxqGZHqhcOXHs4pXI/GoZ8lE+2NJONRifuBpi9DxC58L0Lw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+    <script src="libs/p5.min.js"></script>
+    <script src="libs/p5.sound.min.js"></script>
     <title>Visualizer</title>
 </head>
 
@@ -45,30 +43,70 @@
     </div>
     <code id="frameRate"></code>
     <code id="songPlaying"></code>
-    <div class="options">
-      <span>
-        <label for="bins">Quality</label>
-        <input id="bins" type="number" name="bins" value="10" min="4" max="10" onchange="
-        bins=parseInt(2**this.value);
-        fft.bins=bins;
-        spectrum = []
-        ">
-      </span>
-      <span>
-        <label for="style">Style</label>
-        <input id="style" type="number" name="Style" value="0" min="0" max="100" onchange="
-        dispStyle=parseInt(this.value);
-        console.log(style);
-        ">
-      </span>
-      <button type="button" name="button" onclick="document.body.requestFullscreen()">Fullscreen</button>
-      <span>
-        <label for="volume">Volume</label>
-        <input id="volume" type="number" name="Style" value="50" min="0" max="100" onchange="
-        song.setVolume(parseInt(this.value)/100);
-        ">
-      </span>
-      <button type="button" name="mic" onclick="setMic()">Use Mic</button>
+    <div class="optionsContainer">
+      <p>
+        Options
+        <span class="icon">
+          ⯈
+        </span>
+      </p>
+      <div class="options">
+        <div class="row1">
+
+          <span>
+            <label for="bins">Quality</label>
+            <input id="bins" type="number" name="bins" value="10" min="4" max="10" onchange="
+            this.value = Math.min(10,Math.max(this.value,4))
+            bins=parseInt(2**this.value);
+            fft.bins=bins;
+            spectrum = [];
+            saveOptions()
+            ">
+          </span>
+          <span>
+            <label for="volume">Volume</label>
+            <input id="volume" type="number" name="volume" value="50" min="0" max="100" onchange="
+            song.setVolume(parseInt(this.value)/100);
+            saveOptions()
+            ">
+          </span>
+          <span>
+            <label for="smoothing">Smoothing</label>
+            <input id="smoothing" type="number" name="smoothing" value="40" min="0" max="100" onchange="
+            this.value = Math.min(100,Math.max(this.value,0))
+            fft.smoothing = this.value/100
+            saveOptions()
+            ">
+          </span>
+        </div>
+        <div class="row2">
+          <span>
+            <label for="style">Style</label>
+            <input id="style" type="number" name="style" value="0" min="0" max="100" onchange="
+            this.value = Math.max(Math.min(this.value,styles.length-1),0);
+            dispStyle=parseInt(this.value);
+            resetValues();
+            saveOptions()
+            ">
+          </span>
+
+          <span>
+            <label for="color">Color</label>
+            <input id="color" type="color" value="#ffffff" onchange="
+            document.querySelector(':root').style.setProperty('--primary', this.value);
+            color.value.r = parseInt(this.value[1]+this.value[2],16)
+            color.value.g = parseInt(this.value[3]+this.value[4],16)
+            color.value.b = parseInt(this.value[5]+this.value[6],16)
+            saveOptions()
+            document.querySelector(':root').style.setProperty('--secondary', `rgb(${color.invert().r},${color.invert().g},${color.invert().b})`);
+            ">
+          </span>
+        </div>
+
+        <div class="row3">
+          <button type="button" name="button" onclick="document.body.requestFullscreen()">Fullscreen</button>
+        </div>
+      </div>
     </div>
     <div id="songList">
 
@@ -76,7 +114,7 @@
     <script src="miscSetup.js" charset="utf-8"></script>
     <script src="styles.js" charset="utf-8"></script>
     <script src="visualize.js"></script>
-    <script src="songInfo.js" charset="utf-8"></script>
+    <script src="songInfo.js" defer charset="utf-8"></script>
     <!-- <script src="script.js" charset="utf-8"></script> -->
 </body>
 

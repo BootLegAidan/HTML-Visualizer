@@ -1,0 +1,6 @@
+
+*.pyc
+*.pyc
+mutagen/asf/__pycache__/__init__.cpython-311.pyc
+Visualizer/songs.json
+*.pyc

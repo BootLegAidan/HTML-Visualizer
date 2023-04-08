@@ -1,3 +1,11 @@
+v1.3
+Added a color option
+Options save after you close the window
+Added style 59
+Added style 60
+Removed "Use Mic" button
+Made Options tidier
+
 v1.2
 Moved all the styles to a separate file
 Changed style system to use an arrow of functions instead of a bunch of switch cases

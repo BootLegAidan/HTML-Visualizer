@@ -43,7 +43,8 @@ let styles = [
   }, // 3
 
   ({bin, rads, i, minC})=>{ // 4
-    ctx.fillStyle = `rgba(255,255,255,${(bin/255)/4})`
+    color.setFill(color.opacity((bin/255)/4))
+    // ctx.fillStyle = `rgba(255,255,255,${(bin/255)/4})`
     fillCircle(cenX(Math.sin((rads/2)*i)*minC/4),cenY(Math.cos((rads/2)*i)*minC/4),(minC/10)*(bin/255))
     fillCircle(cenX(Math.sin(-(rads/2)*i)*minC/4),cenY(Math.cos(-(rads/2)*i)*minC/4),(minC/10)*(bin/255))
   }, // 4
@@ -111,15 +112,13 @@ let styles = [
     fillRect(x*w,y*h,w,h)
   } // 10
 
-  ,({bins,i,bin,width})=>{ // 1
+  ,({bins,i,bin,width})=>{ // 11
     let h = canvas.height / 250
-    ctx.fillStyle = `rgb(${bin},${bin},${bin})`
+    color.setFill(color.darken((bin)/255))
     fillRect(i*width,0,width,styleCfg[11].scrollSpeed)
   } // 11
 
   ,({i,width,bin,height})=>{ // 12
-    ctx.fillStyle = 'white'
-    ctx.strokeStyle = 'white'
     fillRect(i*width/2,invY(0),width/2,-bin*height)
     fillRect(invX(i*width/2),invY(0),width/2,-bin*height)
   } // 12
@@ -132,7 +131,6 @@ let styles = [
       }
     }
     if (bin <= globalTemps[13].val) {
-      ctx.fillStyle = 'white'
       fillRect((i+(globalTemps[13].index))*0.5*width,invY((bin+globalTemps[13].val)*0.5*height),10,10)
       fillRect(i*width,invY(bin*height),10,10)
       globalTemps[13] = {
@@ -142,11 +140,11 @@ let styles = [
     }
   } // 13
 
-  ,({i,width,bin,height,spectrum})=>{ // 15
-    ctx.fillStyle = 'red'
+  ,({i,width,bin,height,spectrum})=>{ // 14
+    color.setFill()
     fillRect(i*width,invY(0),width,-bin*height*0.5)
 
-    ctx.fillStyle = 'blue'
+    color.setFill(color.invert())
     fillRect((i)*width,invY((bin*height*0.5)+(spectrum[bins-i]*height*0.5)),width,spectrum[bins-i]*height*0.5)
   } // 14
 
@@ -185,7 +183,7 @@ let styles = [
   } // 17
 
   ,({i,width,bin,height})=>{ // 18
-    ctx.fillStyle='rgba(255,255,255,0.025)'
+    color.setFill(color.opacity(0.025))
     ctx.beginPath()
     moveTo((i-7)*width,0)
     lineTo((i-4)*width,bin*height*0.5)
@@ -267,9 +265,9 @@ let styles = [
 
   ,({width,i,bin,height,nextBin})=>{ // 23
     // temp = width
-    ctx.fillStyle = '#fff'
+    color.setFill()
     fillRect(width*i,0,width,bin*height*0.75)
-    ctx.fillStyle = '#bbb'
+    color.setFill(color.darken(0.66))
     ctx.beginPath()
     moveTo(i*width,bin*height*0.75)
     lineTo((i+1)*width,bin*height*0.75)
@@ -277,7 +275,7 @@ let styles = [
     lineTo((i+0.5)*width,(bin*height*0.75)+(width/2))
     ctx.fill()
 
-    ctx.fillStyle = '#777'
+    color.setFill(color.darken(0.33))
     ctx.beginPath()
     moveTo((i+1)*width,bin*height*0.75)
     lineTo((i+1)*width,nextBin*height*0.75)
@@ -289,16 +287,16 @@ let styles = [
   ,({width,i,bin,height,nextBin})=>{ // 24
     // temp = width
     for (let j = styleCfg[24].layers; j > 0; j--) {
-      ctx.fillStyle = `rgb(${250/(j+1)},${250/(j+1)},${250/(j+1)})`
+      color.setFill(color.darken(1-(j/styleCfg[24].layers)))
       fillRect((width*i)+(width*0.5*j),0,width,(bin*height*0.75)+(width*1.5*j))
-      ctx.fillStyle = `rgb(${200/(j+1)},${200/(j+1)},${200/(j+1)})`
+      color.setFill(color.darken(0.66,color.darken(1-(j/styleCfg[24].layers))))
       ctx.beginPath()
       moveTo((i*width)+(width*0.5*j),(bin*height*0.75)+(width*1.5*j))
       lineTo(((i+1)*width)+(width*0.5*j),(bin*height*0.75)+(width*1.5*j))
       lineTo(((i+1.5)*width)+(width*0.5*j),((bin*height*0.75)+(width/2))+(width*1.5*j))
       lineTo(((i+0.5)*width)+(width*0.5*j),((bin*height*0.75)+(width/2))+(width*1.5*j))
       ctx.fill()
-      ctx.fillStyle = `rgb(${150/(j+1)},${150/(j+1)},${150/(j+1)})`
+      color.setFill(color.darken(0.33,color.darken(1-(j/styleCfg[24].layers))))
       ctx.beginPath()
       moveTo(((i+1)*width)+(width*0.5*j),(bin*height*0.75)+(width*1.5*j))
       lineTo(((i+1)*width)+(width*0.5*j),(nextBin*height*0.75)+(width*1.5*j))
@@ -352,7 +350,7 @@ let styles = [
   } // 26
 
   ,({bin,i,bins,width})=>{ // 27
-    ctx.fillStyle = `rgb(${bin},${bin},${bin})`
+    color.setFill(color.darken((bin)/255))
     fillRect(cenX(-i*width*0.5),0,width/2,10)
     fillRect(cenX(i*width*0.5),0,width/2,10)
     fillRect(cenX(-i*width*0.5),invY(10),width/2,10)
@@ -365,7 +363,7 @@ let styles = [
   } // 27
 
   ,({bin,i,bins,width})=>{ // 28
-    ctx.fillStyle = `rgb(${bin},${bin},${bin})`
+    color.setFill(color.darken((bin)/255))
     fillRect(cenX(-i*width*0.5),0,width/2,10)
     fillRect(cenX(i*width*0.5),0,width/2,10)
     fillRect(cenX(-i*width*0.5),invY(10),width/2,10)
@@ -412,14 +410,14 @@ let styles = [
   } // 32
 
   ,({bin,minC,bins,i})=>{ // 33
-    fillStyle(`gray(${bin/255})`)
+    color.setFill(color.darken((bin)/255))
     fillCircle(cenX(0),cenY(0),(minC/bins/2)*(bins-i))
   } // 33
 
   ,({tickNum,i,bins,minC,bin})=>{ // 34
     ctx.translate((canvas.width/2),(canvas.height/2))
     ctx.rotate(tickNum/50)
-    ctx.fillStyle = `rgb(${bin},${bin},${bin})`
+    color.setFill(color.darken((bin)/255))
     ctx.fillRect(i*(minC/bins)*0.5,-5,(minC/bins)*0.5,10)
   } // 34
 
@@ -460,7 +458,7 @@ let styles = [
   } // 37
 
   ,({bins,i,tickNum,bin})=>{ // 38
-    ctx.fillStyle = `rgba(255,255,255,0.25)`
+    color.setFill(color.opacity(0.25))
     let pos = [
       ((new alea(i+'x')() * 2) - 1) * Math.sin(tickNum*0.001*(new alea(i+'xc')())),
       ((new alea(i+'y')() * 2) - 1) * Math.cos(tickNum*0.001*(new alea(i+'yc')()))
@@ -473,7 +471,7 @@ let styles = [
   } // 38
 
   ,({bins,i,tickNum,bin})=>{ // 39
-    ctx.fillStyle = `rgba(255,255,255,0.25)`
+    color.setFill(color.opacity(0.25))
     let pos = [
       ((new alea(i+'x')() * 2) - 1) * Math.sin(tickNum*0.001*(new alea(i+'xc')())),
       ((new alea(i+'y')() * 2) - 1) * Math.cos(tickNum*0.001*(new alea(i+'yc')()))
@@ -518,7 +516,6 @@ let styles = [
 
   ,({i,width,bin,nextBin,spectrum,volume})=>{ // 41
     // center('y')
-    ctx.fillStyle = 'white'
     gap = canvas.height/4
     if (i % 2 == 0) {
       for (let j = -1; j <= 1; j++) {
@@ -533,22 +530,18 @@ let styles = [
   } // 41
 
   ,({i,width,bin,volume})=>{ // 42
-    ctx.fillStyle = 'white'
     fillRect(i*width,0,width,cenY(spectrum[i]*canvas.height*0.4*(1/volume)))
   } // 42
 
   ,({i,width,bin})=>{ // 43
-    ctx.fillStyle = 'white'
     fillRect(i*width,(canvas.height*0.25)+(bin*canvas.height*0.25),width,cenY(spectrum[i]*canvas.height*0.25))
   } // 43
 
   ,({i,width,bin})=>{ // 44
-    ctx.fillStyle = 'white'
     fillRect(i*width,(canvas.height*0.25)+(bin*canvas.height*0.25),width,cenY(-spectrum[i]*canvas.height*0.5))
   } // 44
 
   ,({i,width,lastSpectrum,lastBin,bin})=>{ // 45
-    ctx.fillStyle = 'white'
     if (i == 0) {
       ctx.stroke()
       ctx.beginPath()
@@ -608,7 +601,7 @@ let styles = [
       }
     }
     globalTemps[47].forEach((spect, index) => {
-      ctx.fillStyle = `hsl(0,0%,${(100/iterations)*index}%)`
+      color.setFill(color.darken((index/iterations)))
       fillRect(
         i*width,
         invY((spect[i]/255)*(canvas.height/iterations)*5)-((canvas.height/iterations)*(iterations-index)*0.5),
@@ -707,7 +700,7 @@ let styles = [
     ),((bin/255)*radi*2))
   } // 54
 
-  ,({i,bin,bins,})=>{ /// 55
+  ,({i,bin,bins})=>{ /// 55
     globalTemps[55].vels[i] = ((bin/255) + (globalTemps[55].vels[i] || 0)) * 0.75
     globalTemps[55].pos[i] = (globalTemps[55].vels[i] + (globalTemps[55].pos[i]||0)) % 360
     ang = (globalTemps[55].pos[i]/360)*Math.PI*2
@@ -804,8 +797,72 @@ let styles = [
       } else {
         globalTemps[46][j] = ((bin/255) + (globalTemps[46][j])*j)/(1+j)
       }
-      ctx.fillStyle = `rgb(${255-(255/(styleCfg[46].iterations-1))*j},${255-(255/(styleCfg[46].iterations-1))*j},${255-(255/(styleCfg[46].iterations-1))*j})`
+      color.setFill(color.darken(1-(j/styleCfg[46].iterations)))
       fillRect(i*width,-(globalTemps[46][j]*canvas.height*0.3),width,(globalTemps[46][j]*canvas.height*0.3*2))
     }
   } // 58
+
+  ,({bin,i,bins,minC})=>{ // 59
+    globalTemps[59][i] = ((bin*10) + (globalTemps[59][i]||0)) % 360
+    ang = (globalTemps[59][i]/360)*Math.PI*2
+    radi = (minC/2)/bins
+    fillCircle(cenX(
+      Math.sin(ang+(Math.PI*0.5))*radi*i
+    ),cenY(
+      Math.cos(ang+(Math.PI*0.5))*radi*i
+    ),((bin+1)*radi))
+    fillCircle(cenX(
+      -Math.sin(ang+(Math.PI*0.5))*radi*i
+    ),cenY(
+      -Math.cos(ang+(Math.PI*0.5))*radi*i
+    ),((bin+1)*radi))
+  } // 59
+  /* sixty
+  ████  ████
+  █     █  █
+  ████  █  █
+  █  █  █  █
+  ████  ████
+  */
+  ,({bin,i,bins,minC})=>{ // 60
+    if (!isNaN(globalTemps[60][i]) || !(globalTemps[60].length < bins-1)) {
+      if ( globalTemps[60][i] > 0) {
+        globalTemps[60][i] -= 0.05
+      } else {
+        globalTemps[60][i] += 0.05
+      }
+    } else {
+      globalTemps[60][i] = 0
+    }
+    globalTemps[60][i] = ((bin*5) + (globalTemps[60][i]||0)) % 360
+    ang = (globalTemps[60][i]/360)*Math.PI*2
+    ang2 = ((globalTemps[60][i-1]||0)/360)*Math.PI*2
+    radi = (minC/2)/bins
+    color.setStroke()
+    ctx.beginPath()
+    moveTo(cenX(
+        Math.sin(ang2+(Math.PI*0.5))*radi*(i-1)
+      ),cenY(
+        Math.cos(ang2+(Math.PI*0.5))*radi*(i-1)
+    ))
+    lineTo(cenX(
+        Math.sin(ang+(Math.PI*0.5))*radi*i
+      ),cenY(
+        Math.cos(ang+(Math.PI*0.5))*radi*i
+    ))
+    ctx.stroke()
+    color.setStroke(color.invert())
+    ctx.beginPath()
+    moveTo(cenX(
+        -Math.sin(ang2+(Math.PI*0.5))*radi*(i-1)
+      ),cenY(
+        -Math.cos(ang2+(Math.PI*0.5))*radi*(i-1)
+    ))
+    lineTo(cenX(
+        -Math.sin(ang+(Math.PI*0.5))*radi*i
+      ),cenY(
+        -Math.cos(ang+(Math.PI*0.5))*radi*i
+    ))
+    ctx.stroke()
+  } // 60
 ]
