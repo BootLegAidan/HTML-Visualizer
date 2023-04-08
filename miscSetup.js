@@ -24,7 +24,27 @@ let globalTemps = {
   57: {
     vel: [],
     pos: []
-  }
+  },
+  59: [],
+  60: []
+}
+function resetValues () {
+  sliders = [];
+  lastImgDat = [];
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  offscreenC.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  globalTemps[47] = []
+  globalTemps[54] = []
+  globalTemps[55].vels = []
+  globalTemps[55].pos = []
+  globalTemps[56].vels =[]
+  globalTemps[56].pos =[]
+  globalTemps[56].goal =[]
+  globalTemps[56].goalCompleted =[]
+  globalTemps[57].vels = []
+  globalTemps[57].pos = []
+  globalTemps[59] = []
+  globalTemps[60] = [0]
 }
 const styleCfg = {
   11: {

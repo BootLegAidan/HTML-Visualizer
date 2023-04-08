@@ -1,9 +1,13 @@
+:root {
+  --primary: white;
+  --secondary: black
+}
 main {
   display: none
 }
 body, :root{
     background-color: black;
-    color: #FFFFFF;
+    color: var(--primary);
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -19,7 +23,7 @@ canvas {
     /* position: absolute; */
 }
 .progress {
-  background: white;
+  background: var(--primary);
   width: 0%;
   transition: width 1s linear;
   display: inline-block;
@@ -37,12 +41,12 @@ canvas {
   /* position: absolute;
   top: 100vh; */
 }
-#songPlaying, #frameRate {
+#songPlaying {
   position: absolute;
   top: 0;
   right: 0;
   background: rgba(0,0,0,0.25);
-  color: white;
+  color: var(--primary);
   padding: 10px;
   text-align: center;
 }
@@ -52,12 +56,18 @@ canvas {
 input, button {
   outline: none;
 }
+.song:hover {
+  /* background: #333 */
+  color: black;
+  filter: invert(100%);
+}
 .song {
   display: block;
   height: 20px;
   width: 90%;
-  border: 1px solid white;
-  background: #000;
+  border: 1px solid var(--primary);
+  /* background: var(--secondary); */
+  color: white;
   transition: all 0.25s;
   padding: 2px;
   margin-bottom: 5px;
@@ -68,13 +78,33 @@ input, button {
   cursor: default;
   user-select: none;
 }
-.options {
+.optionsContainer {
+  transition: height 0.25s, background-color 0.25s
+}
+.icon {
+  transition: 0.25s rotate
+}
+.optionsContainer {
+  height: 2.5em;
+  overflow: hidden;
+  border: 1px solid var(--primary);
+  margin-bottom: 1em;
+}
+.optionsContainer p {
+  text-align: center;
+  margin-top: 0.5em;
+}
+.optionsContainer:hover {
+  height: 10em;
+}
+.optionsContainer:hover p .icon {
+  display: inline-block;
+  rotate: 90deg
+}
+.row1, .row2, .row3 {
   display: flex;
   justify-content: space-around;
-}
-.song:hover {
-  /* background: #333 */
-  filter: invert(100%);
+  padding-bottom: 5px;
 }
 .hidden {
   display: none;

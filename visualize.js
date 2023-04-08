@@ -1,5 +1,43 @@
-let sensitivity = 0.1 ; // Percent (0 - 100)
+// let sensitivity = 0.1 ; // Percent (0 - 100)
 let dispStyle = 0;
+let color = {
+  value: {
+    r: 255,
+    g: 255,
+    b: 255,
+    a: 1
+  },
+  setFill(c=this.value) {
+    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${c.a})`
+  },
+  setStroke(c=this.value) {
+    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},${c.a})`
+  },
+  opacity(float,c=this.value) {
+    return {
+      r: c.r,
+      g: c.g,
+      b: c.b,
+      a: c.a * float
+    }
+  },
+  darken(float,c=this.value) {
+    return {
+      r: c.r*float,
+      g: c.g*float,
+      b: c.b*float,
+      a: c.a
+    }
+  },
+  invert(c=this.value) {
+    return {
+      r: 255-c.r,
+      g: 255-c.g,
+      b: 255-c.b,
+      a: c.a
+    }
+  }
+}
 let currentSong = ''
 let musicDir = 'C:/Users/Aidan/Music/'
 let threshold = 0
@@ -65,7 +103,6 @@ function start() {
     songListEl.append(songEl)
   })
   alerter_show()
-
   newSong()
   fft.setInput(song)
   onResize()
@@ -73,8 +110,36 @@ function start() {
   setInterval(()=>{
     document.getElementById('songTime').style.width = `${Math.floor(1000*(song.currentTime() / currentSong.length))/10}%`
   },1000)
+  loadOptions()
 
 }
+
+function saveOptions() {
+  localStorage.setItem('HTMLVizOptions',JSON.stringify({
+    quality: parseInt(document.getElementById('bins').value),
+    volume: Math.floor(song.getVolume()*100),
+    smoothing: fft.smoothing*100,
+    style: dispStyle,
+    color: document.getElementById('color').value
+  }))
+}
+function loadOptions() {
+  let dat = JSON.parse(localStorage.getItem('HTMLVizOptions'))
+  let b = document.getElementById('bins').value = ((isNaN(dat.quality) && 10) || dat.quality);
+  fft.bins = bins = 2**b
+  let v = document.getElementById('volume').value = Math.floor((isNaN(dat.volume) && 50) || dat.volume);
+  song.setVolume(v/100)
+  let s = document.getElementById('smoothing').value = Math.floor((isNaN(dat.smoothing) && 40) || dat.smoothing);
+  fft.smoothing = s/100
+  dispStyle = document.getElementById('style').value = Math.floor((isNaN(dat.style) && "0") || dat.style);
+  let c = document.getElementById('color').value = ((dat.color.length != 7 && "#ffffff") || dat.color);
+  color.value.r = parseInt(c[1]+c[2],16)
+  color.value.g = parseInt(c[3]+c[4],16)
+  color.value.b = parseInt(c[5]+c[6],16)
+  document.querySelector(':root').style.setProperty('--primary', c);
+  document.querySelector(':root').style.setProperty('--secondary', `rgb(${color.invert().r},${color.invert().g},${color.invert().b})`);
+}
+
 function onResize() {
   let [w,h] = [window.innerWidth,window.innerHeight]
   // console.log(w,h);
@@ -177,12 +242,16 @@ function draw() {
   }
   tick++
   // fft.input.fftSize = bins*4
-  fft.input.fftSize = bins * 2
+  // fft.input.fftSize = bins * 2
   // if ((tick % 5) == 0) {
   //   spectrum = []
   //   console.log('cleared');
   // }
-  spectrum = fft.analyze()
+  if ([41,42,43,44,45,59,60].includes(dispStyle)) {
+    spectrum = fft.waveform()
+  } else {
+    spectrum = fft.analyze()
+  }
   spectrum.length = bins
 
 
@@ -229,19 +298,14 @@ function draw() {
       ctx.translate(-canvas.width/2,-canvas.height/2)
       ctx.drawImage(offscreenC,0,0)
       ctx.resetTransform()
-    break; case 41:
-    case 42:
-    case 43:
-    case 44:
-    case 45:
-      spectrum = fft.waveform()
     break; default:
   }
   ctx.lineCap = 'round'
-  ctx.strokeStyle = 'white'
-  ctx.fillStyle = 'white'
+  // ctx.strokeStyle = 'white'
+  // ctx.fillStyle = 'white'
   ctx.lineWidth = 5;
-
+  color.setFill()
+  color.setStroke()
   if (dispStyle >= styles.length) {
     dispStyle = styles.length - 1
     document.getElementById('style').value = dispStyle

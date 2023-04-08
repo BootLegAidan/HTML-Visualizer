@@ -808,4 +808,67 @@ let styles = [
       fillRect(i*width,-(globalTemps[46][j]*canvas.height*0.3),width,(globalTemps[46][j]*canvas.height*0.3*2))
     }
   } // 58
+  ,({bin,i,bins,minC})=>{ // 59
+    globalTemps[59][i] = ((bin*10) + (globalTemps[59][i]||0)) % 360
+    ang = (globalTemps[59][i]/360)*Math.PI*2
+    radi = (minC/2)/bins
+    fillCircle(cenX(
+      Math.sin(ang+(Math.PI*0.5))*radi*i
+    ),cenY(
+      Math.cos(ang+(Math.PI*0.5))*radi*i
+    ),((bin+1)*radi))
+    fillCircle(cenX(
+      -Math.sin(ang+(Math.PI*0.5))*radi*i
+    ),cenY(
+      -Math.cos(ang+(Math.PI*0.5))*radi*i
+    ),((bin+1)*radi))
+  } // 59
+  /* sixty
+  ████  ████
+  █     █  █
+  ████  █  █
+  █  █  █  █
+  ████  ████
+  */
+  ,({bin,i,bins,minC})=>{ // 60
+    if (!isNaN(globalTemps[60][i]) || !(globalTemps[60].length < bins-1)) {
+      if ( globalTemps[60][i] > 0) {
+        globalTemps[60][i] -= 0.05
+      } else {
+        globalTemps[60][i] += 0.05
+      }
+    } else {
+      globalTemps[60][i] = 0
+    }
+    globalTemps[60][i] = ((bin*5) + (globalTemps[60][i]||0)) % 360
+    ang = (globalTemps[60][i]/360)*Math.PI*2
+    ang2 = ((globalTemps[60][i-1]||0)/360)*Math.PI*2
+    radi = (minC/2)/bins
+    color.setStroke()
+    ctx.beginPath()
+    moveTo(cenX(
+        Math.sin(ang2+(Math.PI*0.5))*radi*(i-1)
+      ),cenY(
+        Math.cos(ang2+(Math.PI*0.5))*radi*(i-1)
+    ))
+    lineTo(cenX(
+        Math.sin(ang+(Math.PI*0.5))*radi*i
+      ),cenY(
+        Math.cos(ang+(Math.PI*0.5))*radi*i
+    ))
+    ctx.stroke()
+    color.setStroke(color.invert())
+    ctx.beginPath()
+    moveTo(cenX(
+        -Math.sin(ang2+(Math.PI*0.5))*radi*(i-1)
+      ),cenY(
+        -Math.cos(ang2+(Math.PI*0.5))*radi*(i-1)
+    ))
+    lineTo(cenX(
+        -Math.sin(ang+(Math.PI*0.5))*radi*i
+      ),cenY(
+        -Math.cos(ang+(Math.PI*0.5))*radi*i
+    ))
+    ctx.stroke()
+  } // 60
 ]
